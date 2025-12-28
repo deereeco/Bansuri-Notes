@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bansuri Flute Note Finder</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1>Bansuri Flute Note Finder</h1>
+    <button id="theme-toggle" aria-label="Toggle dark mode">
+      <span class="sun-icon">&#9728;</span>
+      <span class="moon-icon">&#9790;</span>
+    </button>
+  </header>
+
+  <main>
+    <!-- Section 1: Flute Note Visualizer -->
+    <section id="visualizer-section">
+      <h2>Flute Note Visualizer</h2>
+      <p>Select a flute to see its notes, and optionally enter notes to see how they map.</p>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="flute-select">Select Flute:</label>
+          <select id="flute-select">
+            <option value="A">A Flute</option>
+            <option value="A#">A# Flute</option>
+            <option value="B">B Flute</option>
+            <option value="C">C Flute</option>
+            <option value="C#">C# Flute</option>
+            <option value="D">D Flute</option>
+            <option value="D#">D# Flute</option>
+            <option value="E">E Flute</option>
+            <option value="F">F Flute</option>
+            <option value="F#">F# Flute</option>
+            <option value="G">G Flute</option>
+            <option value="G#">G# Flute</option>
+          </select>
+        </div>
+
+        <div class="control-group">
+          <label for="visualizer-notes">Enter notes (optional):</label>
+          <input type="text" id="visualizer-notes" placeholder="e.g., C D E G A or C, D, E, G, A">
+        </div>
+      </div>
+
+      <div class="scale-info" id="scale-info"></div>
+      <div class="flute-container" id="visualizer-flute"></div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot default"></span> Matching note</div>
+        <div class="legend-item"><span class="legend-dot avoid"></span> Avoid (in scale, not in input)</div>
+        <div class="legend-item"><span class="legend-dot extra"></span> Extra (in input, not in scale)</div>
+      </div>
+    </section>
+
+    <!-- Section 2: Flute Finder -->
+    <section id="finder-section">
+      <h2>Find Your Perfect Flute</h2>
+      <p>Enter the notes of your melody to find the best matching flute.</p>
+
+      <div class="controls">
+        <div class="control-group">
+          <label for="finder-notes">Enter notes:</label>
+          <input type="text" id="finder-notes" placeholder="e.g., C D E F# G A B">
+        </div>
+        <button id="recommend-btn">Recommend Flute</button>
+      </div>
+
+      <div id="finder-results"></div>
+      <button id="add-next-btn" style="display: none;">Add Next Recommended Flute</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Bansuri Flute Note Finder - Documentation</title>
+  <style>
+    body {
+      font-family: Georgia, serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 40px 20px;
+      background: white;
+      color: black;
+      line-height: 1.6;
+    }
+    h1 {
+      font-size: 2.5em;
+      border-bottom: 3px solid black;
+      padding-bottom: 10px;
+      margin-bottom: 30px;
+    }
+    h2 {
+      font-size: 1.8em;
+      border-bottom: 1px solid black;
+      padding-bottom: 8px;
+      margin-top: 40px;
+      margin-bottom: 20px;
+    }
+    h3 {
+      font-size: 1.3em;
+      margin-top: 25px;
+      margin-bottom: 10px;
+    }
+    p {
+      margin-bottom: 15px;
+    }
+    ul, ol {
+      margin-bottom: 15px;
+      padding-left: 25px;
+    }
+    li {
+      margin-bottom: 8px;
+    }
+    .example {
+      background: #f5f5f5;
+      border-left: 4px solid black;
+      padding: 15px;
+      margin: 20px 0;
+      font-family: monospace;
+    }
+    .important {
+      font-weight: bold;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Bansuri Flute Note Finder</h1>
+
+<p>This application helps Bansuri (Indian bamboo flute) players visualize the notes on their flute and find the best flute for playing a particular set of notes or melody.</p>
+
+<h2>Overview</h2>
+
+<p>The application has two main sections:</p>
+
+<ol>
+  <li><strong>Flute Note Visualizer</strong> - Select any flute and see exactly which notes it can play. Optionally enter notes to see how they map onto the flute.</li>
+  <li><strong>Find Your Perfect Flute</strong> - Enter the notes of a melody or song, and the app recommends which flute will best match those notes.</li>
+</ol>
+
+<h2>Understanding Bansuri Naming Convention</h2>
+
+<p>This is the key concept that makes the app work:</p>
+
+<p class="important">A Bansuri flute is named after its 4th scale degree (the subdominant note), NOT after the root note of the scale it plays.</p>
+
+<h3>Why This Naming Exists</h3>
+
+<p>In Indian classical music, the 4th note of the scale (called "Ma" in sargam notation) is a significant reference point. When all six finger holes are closed on a Bansuri, it produces this 4th note - and this is what the flute is named after.</p>
+
+<h3>The Relationship Between Flute Name and Scale</h3>
+
+<p>To find which major scale a flute plays, you must count <strong>5 semitones DOWN</strong> from the flute's name. This is because the 4th note of a major scale is always 5 semitones above the root.</p>
+
+<div class="example">
+  <strong>Example: A Flute</strong><br><br>
+  Flute name: A<br>
+  Count 5 semitones down from A: A -> G# -> G -> F# -> F -> E<br>
+  Root note: E<br>
+  Scale played: E Major<br>
+  Notes: E - F# - G# - A - B - C# - D#
+</div>
+
+<div class="example">
+  <strong>Example: C Flute</strong><br><br>
+  Flute name: C<br>
+  Count 5 semitones down from C: C -> B -> A# -> A -> G# -> G<br>
+  Root note: G<br>
+  Scale played: G Major<br>
+  Notes: G - A - B - C - D - E - F#
+</div>
+
+<div class="example">
+  <strong>Example: G Flute</strong><br><br>
+  Flute name: G<br>
+  Count 5 semitones down from G: G -> F# -> F -> E -> D# -> D<br>
+  Root note: D<br>
+  Scale played: D Major<br>
+  Notes: D - E - F# - G - A - B - C#
+</div>
+
+<h2>How the Major Scale is Produced</h2>
+
+<p>A standard Bansuri has 6 finger holes plus the blow hole. The 7 notes of the major scale are produced as follows:</p>
+
+<h3>Finger Positions and Notes</h3>
+
+<ul>
+  <li><strong>All 6 holes closed</strong> - Produces the 1st note (Sa/root)</li>
+  <li><strong>Bottom hole open (hole 6)</strong> - Produces the 2nd note (Re)</li>
+  <li><strong>Bottom 2 holes open (holes 5-6)</strong> - Produces the 3rd note (Ga)</li>
+  <li><strong>Bottom 3 holes open (holes 4-6)</strong> - Produces the 4th note (Ma) - this is the flute's name</li>
+  <li><strong>Bottom 4 holes open (holes 3-6)</strong> - Produces the 5th note (Pa)</li>
+  <li><strong>Bottom 5 holes open (holes 2-6)</strong> - Produces the 6th note (Dha)</li>
+  <li><strong>All 6 holes open</strong> - Produces the 7th note (Ni)</li>
+</ul>
+
+<h3>The Major Scale Pattern</h3>
+
+<p>The major scale follows this interval pattern (in semitones):</p>
+
+<div class="example">
+  Root -> +2 -> +2 -> +1 -> +2 -> +2 -> +2 -> +1<br><br>
+  Or in terms of whole (W) and half (H) steps:<br>
+  W - W - H - W - W - W - H
+</div>
+
+<p>The app uses these intervals [0, 2, 4, 5, 7, 9, 11] from the root note to calculate all 7 notes of the major scale.</p>
+
+<h2>All 12 Flutes and Their Scales</h2>
+
+<p>Here is the complete reference for all flute types:</p>
+
+<ul>
+  <li><strong>A Flute</strong> - Plays E Major (E, F#, G#, A, B, C#, D#)</li>
+  <li><strong>A# Flute</strong> - Plays F Major (F, G, A, A#, C, D, E)</li>
+  <li><strong>B Flute</strong> - Plays F# Major (F#, G#, A#, B, C#, D#, F)</li>
+  <li><strong>C Flute</strong> - Plays G Major (G, A, B, C, D, E, F#)</li>
+  <li><strong>C# Flute</strong> - Plays G# Major (G#, A#, C, C#, D#, F, G)</li>
+  <li><strong>D Flute</strong> - Plays A Major (A, B, C#, D, E, F#, G#)</li>
+  <li><strong>D# Flute</strong> - Plays A# Major (A#, C, D, D#, F, G, A)</li>
+  <li><strong>E Flute</strong> - Plays B Major (B, C#, D#, E, F#, G#, A#)</li>
+  <li><strong>F Flute</strong> - Plays C Major (C, D, E, F, G, A, B)</li>
+  <li><strong>F# Flute</strong> - Plays C# Major (C#, D#, F, F#, G#, A#, C)</li>
+  <li><strong>G Flute</strong> - Plays D Major (D, E, F#, G, A, B, C#)</li>
+  <li><strong>G# Flute</strong> - Plays D# Major (D#, F, G, G#, A#, C, D)</li>
+</ul>
+
+<h2>Using the Flute Note Visualizer</h2>
+
+<ol>
+  <li>Select a flute from the dropdown menu</li>
+  <li>The flute is displayed showing all 7 notes of its major scale</li>
+  <li>Optionally enter notes (space or comma separated) to see how they map onto the flute</li>
+  <li>Notes that are in your input that match the major scale notes for that flute appear normally</li>
+  <li>Notes that are not in your input but are in the major scale appear highlighted in red (don't play these)</li>
+  <li>Notes that are in your input that are NOT in the scale appear highlighted in green (extra notes)</li>
+  <li>Toggle between vertical and horizontal display orientations</li>
+</ol>
+
+<h2>Using the Flute Finder</h2>
+
+<ol>
+  <li>Enter the notes you want to play (e.g., "C D E G A" or "C, D, E, G, A")</li>
+  <li>Click "Recommend Flute"</li>
+  <li>The app calculates which flute's scale contains the most matching notes</li>
+  <li>The recommended flute is displayed with a match percentage</li>
+  <li>Notes that are in your input that match the major scale notes for that flute appear normally</li>
+  <li>Notes that are not in your input but are in the major scale appear highlighted in red (don't play these)</li>
+  <li>Notes that are in your input that are NOT in the scale appear highlighted in green (extra notes)</li>
+  <li>Click "Add Next Recommended Flute" to see additional flute options ranked by match quality</li>
+</ol>
+
+<h2>Note Input Format</h2>
+
+<p>The app accepts notes in several formats:</p>
+
+<ul>
+  <li>Space-separated: <strong>C D E F G</strong></li>
+  <li>Comma-separated: <strong>C, D, E, F, G</strong></li>
+  <li>With sharps: <strong>C D E F# G</strong> or <strong>C D E F #, G</strong></li>
+  <li>With flats (converted to sharps): <strong>Db</strong> becomes <strong>C#</strong>, <strong>Bb</strong> becomes <strong>A#</strong></li>
+</ul>
+
+</body>
+</html>

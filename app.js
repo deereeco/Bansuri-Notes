@@ -286,18 +286,17 @@ function renderFlute(container, scaleNotes, inputNotes = []) {
     const note = holeNotes[i];
     hole.textContent = note;
 
-    // Determine color class
-    if (hasInput) {
-      if (inputNotes.includes(note)) {
-        // Note is in user input
-        hole.classList.add('default');
-      } else {
-        // Note is in scale but not in input - avoid
-        hole.classList.add('avoid');
-      }
+    // Apply color based on input state
+    if (!hasInput) {
+      // No input: black holes
+      hole.classList.add('no-input');
     } else {
-      // No input - show all as default
-      hole.classList.add('default');
+      // With input: green if in input, red if not
+      if (inputNotes.includes(note)) {
+        hole.classList.add('extra');  // green
+      } else {
+        hole.classList.add('avoid');  // red
+      }
     }
 
     wrapper.appendChild(hole);
@@ -318,32 +317,129 @@ function renderFlute(container, scaleNotes, inputNotes = []) {
   }
 
   // Add extra notes indicator if there are notes not in scale
-  if (hasInput) {
-    const extraNotes = inputNotes.filter(n => !scaleNotes.includes(n));
-    if (extraNotes.length > 0) {
-      const extraContainer = document.createElement('div');
-      extraContainer.className = 'extra-notes-container';
-      extraContainer.style.marginTop = orientation === 'vertical' ? '1rem' : '0';
-      extraContainer.style.marginLeft = orientation === 'horizontal' ? '2rem' : '0';
-      extraContainer.style.display = 'flex';
-      extraContainer.style.flexDirection = orientation === 'vertical' ? 'row' : 'column';
-      extraContainer.style.gap = '0.5rem';
-      extraContainer.style.alignItems = 'center';
+  const extraNotes = hasInput ? inputNotes.filter(n => !scaleNotes.includes(n)) : [];
+  let extraContainer = null;
 
-      for (const note of extraNotes) {
-        const extraHole = document.createElement('div');
-        extraHole.className = 'hole extra';
-        extraHole.textContent = note;
-        extraHole.title = 'This note is not in the scale';
-        extraContainer.appendChild(extraHole);
+  if (hasInput && extraNotes.length > 0 && orientation === 'horizontal') {
+    extraContainer = document.createElement('div');
+    extraContainer.className = 'extra-notes-container';
+    extraContainer.style.display = 'flex';
+    extraContainer.style.flexDirection = 'row';
+    extraContainer.style.alignItems = 'center';
+    extraContainer.style.marginBottom = '0.5rem';
+
+    // Get chromatic indices for hole notes (descending pitch order)
+    const holeIndices = holeNotes.map(n => noteToIndex(n));
+
+    // Helper: check if noteIdx falls between highIdx and lowIdx chromatically
+    function isBetweenChromatic(noteIdx, highIdx, lowIdx) {
+      if (highIdx > lowIdx) {
+        return noteIdx < highIdx && noteIdx > lowIdx;
+      } else {
+        return noteIdx < highIdx || noteIdx > lowIdx;
+      }
+    }
+
+    // Find which gap each extra note belongs to (gap i is between hole[i] and hole[i+1])
+    const gapNotes = Array(6).fill(null).map(() => []);
+
+    for (const extraNote of extraNotes) {
+      const extraIdx = noteToIndex(extraNote);
+      for (let i = 0; i < 6; i++) {
+        if (isBetweenChromatic(extraIdx, holeIndices[i], holeIndices[i + 1])) {
+          gapNotes[i].push(extraNote);
+          break;
+        }
+      }
+    }
+
+    // Create wrappers that EXACTLY match hole-wrapper structure
+    // Extra notes are positioned at the right edge of each wrapper (in the gap area)
+    for (let i = 0; i < 7; i++) {
+      const wrapper = document.createElement('div');
+      wrapper.style.position = 'relative';
+      wrapper.style.width = '34px';
+      wrapper.style.height = '34px';
+      wrapper.style.margin = '0 12px';
+      wrapper.style.flexShrink = '0';
+
+      // Match special margins for blow-hole and hole-6
+      if (i === 0) {
+        wrapper.style.marginRight = '80px';
+      } else if (i === 6) {
+        wrapper.style.marginLeft = '30px';
       }
 
-      flute.appendChild(extraContainer);
+      // If this gap (after hole i) has extra notes, position them at the right edge
+      if (i < 6 && gapNotes[i].length > 0) {
+        const noteContainer = document.createElement('div');
+        noteContainer.style.position = 'absolute';
+        noteContainer.style.right = '0';
+        noteContainer.style.top = '50%';
+        noteContainer.style.transform = 'translateX(100%) translateY(-50%)';
+        noteContainer.style.display = 'flex';
+        noteContainer.style.gap = '4px';
+
+        // Calculate offset to center in the gap
+        // Gap after blow hole is 80px, others are 24px (12+12), gap 5 is 42px (12+30)
+        let gapWidth = 24;
+        if (i === 0) gapWidth = 80 + 12; // 80px margin + 12px next margin
+        else if (i === 5) gapWidth = 12 + 30; // 12px margin + 30px next margin
+        else gapWidth = 12 + 12; // normal margins
+
+        // Offset to center: half the gap width minus half the note width
+        const noteWidth = gapNotes[i].length * 34 + (gapNotes[i].length - 1) * 4;
+        const offset = (gapWidth - noteWidth) / 2;
+        noteContainer.style.marginLeft = offset + 'px';
+
+        for (const note of gapNotes[i]) {
+          const extraHole = document.createElement('div');
+          extraHole.className = 'hole extra';
+          extraHole.textContent = note;
+          extraHole.title = 'This note is not in the scale';
+          noteContainer.appendChild(extraHole);
+        }
+
+        wrapper.appendChild(noteContainer);
+      }
+
+      extraContainer.appendChild(wrapper);
+    }
+  } else if (hasInput && extraNotes.length > 0 && orientation === 'vertical') {
+    // For vertical orientation, keep simple side placement
+    extraContainer = document.createElement('div');
+    extraContainer.className = 'extra-notes-container';
+    extraContainer.style.marginLeft = '2rem';
+    extraContainer.style.display = 'flex';
+    extraContainer.style.flexDirection = 'row';
+    extraContainer.style.gap = '0.5rem';
+    extraContainer.style.alignItems = 'center';
+
+    for (const note of extraNotes) {
+      const extraHole = document.createElement('div');
+      extraHole.className = 'hole extra';
+      extraHole.textContent = note;
+      extraHole.title = 'This note is not in the scale';
+      extraContainer.appendChild(extraHole);
     }
   }
 
   container.innerHTML = '';
+
+  // For horizontal orientation, stack extra notes above flute using column layout
+  if (extraContainer && orientation === 'horizontal') {
+    container.style.flexDirection = 'column';
+    container.appendChild(extraContainer);
+  } else {
+    container.style.flexDirection = 'row';  // Reset to default row
+  }
+
   container.appendChild(flute);
+
+  // For vertical orientation, add extra notes to the side of the flute
+  if (extraContainer && orientation === 'vertical') {
+    flute.appendChild(extraContainer);
+  }
 }
 
 /**

@@ -327,6 +327,12 @@ button:active {
   color: white;
 }
 
+.hole.no-input {
+  background-color: #000000;
+  border-color: #000000;
+  color: white;
+}
+
 .hole-label {
   font-size: 0.7rem;
   font-weight: 500;
